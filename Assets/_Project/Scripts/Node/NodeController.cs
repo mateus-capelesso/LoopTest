@@ -11,6 +11,7 @@ namespace _Project.Scripts.Node
 		private Dictionary<Direction, NodeController> _neighbors;
 		private int _directionCount;
 
+		public NodeView View => _view;
 		public bool IsSource => _model.IsSource;
 		public bool IsTarget => _model.IsTarget;
 		public bool IsPowered => _model.isPowered;

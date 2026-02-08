@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b51a83889f740aba63a7c13e7067cd6, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Game.GameConfig
+  userKey: user_config
+  pointsPerPiece: 10
+  levels:
+  - {fileID: 11400000, guid: 4e49f9d7d1c8444a4bd288f7d01def82, type: 2}
+  - {fileID: 11400000, guid: dc209db11175c49b7a37cd55282f0d24, type: 2}
+  - {fileID: 11400000, guid: 466fcd065540540dbab0b1b2069cdfcd, type: 2}
+  - {fileID: 11400000, guid: c6f72e6914da347489a373384e6f155e, type: 2}
+  - {fileID: 11400000, guid: fa447656c325d447fa6d1f98af5218c9, type: 2}
+  - {fileID: 11400000, guid: 87aa6ea20e8e74f2f87d1b19086c48ed, type: 2}

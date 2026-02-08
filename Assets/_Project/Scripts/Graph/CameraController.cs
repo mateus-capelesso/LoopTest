@@ -7,6 +7,9 @@ namespace _Project.Scripts.Graph
 {
 	public class CameraController : MonoBehaviour
 	{
+		[SerializeField] private Camera _camera;
+		[SerializeField] private float _margin = 1.5f;
+		
 		public void CenterCamera(IEnumerable<NodeView> views, float cellSize)
 		{
 			if (views == null || !views.Any()) return;
@@ -26,7 +29,7 @@ namespace _Project.Scripts.Graph
 				if (pos.y > maxY) maxY = pos.y;
 			}
 	    
-			float margin = cellSize * 0.5f; 
+			float margin = cellSize * _margin; 
 			minX -= margin;
 			maxX += margin;
 			minY -= margin;
@@ -36,7 +39,7 @@ namespace _Project.Scripts.Graph
 			float height = maxY - minY;
 	    
 			Vector3 centerPos = new Vector3(minX + width / 2f, minY + height / 2f, -10f);
-			Camera.main.transform.position = centerPos;
+			_camera.transform.position = centerPos;
 	    
 			float screenRatio = (float)Screen.width / Screen.height;
 			float targetRatio = width / height;
@@ -45,12 +48,12 @@ namespace _Project.Scripts.Graph
 
 			if (screenRatio >= targetRatio)
 			{
-				Camera.main.orthographicSize = (height / 2f) * padding;
+				_camera.orthographicSize = (height / 2f) * padding;
 			}
 			else
 			{
 				float differenceInSize = targetRatio / screenRatio;
-				Camera.main.orthographicSize = (height / 2f * differenceInSize) * padding;
+				_camera.orthographicSize = (height / 2f * differenceInSize) * padding;
 			}
 		}
 	}

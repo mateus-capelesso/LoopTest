@@ -6,7 +6,7 @@ namespace _Project.Scripts.Level
 	public class LevelData : ScriptableObject
 	{
 		[SerializeField] private GameObject _levelPrefab;
-		[SerializeField] private float _cellSize;
+		[SerializeField] private float _cellSize = 1f;
 		
 		public GameObject LevelPrefab => _levelPrefab;
 		public float CellSize => _cellSize;

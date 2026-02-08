@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,6 @@ using _Project.Scripts.Node;
 
 public class GraphController : MonoBehaviour
 {
-    [SerializeField] private LevelData _levelData;
     [SerializeField] private CameraController _cameraController;
     [SerializeField] private NodePrefabs _prefabs;
 	
@@ -24,6 +24,7 @@ public class GraphController : MonoBehaviour
     
     public bool IsLevelActive => _isLevelActive;
     public Dictionary<NodeView, NodeController> NodeControllerMap => _nodeControllerMap;
+    public List<NodeController> Nodes => _nodes;
 
     private static readonly Dictionary<NodeType, byte> _shapeLibrary = new()
     {
@@ -36,11 +37,6 @@ public class GraphController : MonoBehaviour
     };
     
     public event Action OnLevelCompleted;
-
-    private void Start()
-    {
-	    LoadLevel(_levelData);
-    }
 
     public void LoadLevel(LevelData levelData)
     {
@@ -59,8 +55,6 @@ public class GraphController : MonoBehaviour
         if (builderNodes.Length == 0) return;
         
         var gridMap = new Dictionary<Vector2, NodeController>();
-        var views = new List<NodeView>();
-        
         float minX = builderNodes.Min(v => v.transform.position.x);
         float maxY = builderNodes.Max(v => v.transform.position.y);
 
@@ -81,14 +75,13 @@ public class GraphController : MonoBehaviour
             }
             
             var prefab = _prefabs.GetPrefab(node.Type);
-            var view = Instantiate(prefab, node.transform.position, Quaternion.identity, _gridContainer);
+            var view = Instantiate(prefab, node.transform.position, Quaternion.identity, _currentLevelObject.transform);
             var model = new NodeModel(node.Type, baseShape, node.Direction);
             var ctrl = new NodeController(model, view);
             
             node.gameObject.SetActive(false);
             
             _nodes.Add(ctrl);
-            views.Add(view);
             _nodeControllerMap.Add(view, ctrl);
             if (!gridMap.ContainsKey(pos)) gridMap.Add(pos, ctrl);
         }
@@ -109,7 +102,7 @@ public class GraphController : MonoBehaviour
             LinkIfExists(current, Direction.Left,  pos + Vector2.left * cellSize,  gridMap);
         }
 
-        _cameraController.CenterCamera(views, cellSize);
+        _cameraController.CenterCamera(_nodes.Select(i => i.View), cellSize);
         
         _isLevelActive = true;
         RecalculateFlow();
@@ -125,14 +118,24 @@ public class GraphController : MonoBehaviour
 
     private void ClearLevel()
     {
-        _isLevelActive = false;
-        _nodes.Clear();
         _nodeControllerMap.Clear();
+
+        if (_nodes.Count > 0)
+        {
+	        foreach (var node in _nodes)
+	        {
+		        Destroy(node.View.gameObject);
+	        }
+	        
+	        _nodes.Clear();
+        }
         
         if (_currentLevelObject != null)
         {
             Destroy(_currentLevelObject);
         }
+        
+        _isLevelActive = false;
     }
 	
     public void OnNodeInteracted(NodeController node)
@@ -144,14 +147,26 @@ public class GraphController : MonoBehaviour
         RecalculateFlow();
     }
 
+    
+
     private void RecalculateFlow()
     {
         _bfsController.Run(_nodes);
 
         if (CheckWinCondition())
         {
-            HandleVictory();
+            StartCoroutine(VictoryDelay());
         }
+    }
+    
+    IEnumerator VictoryDelay()
+    {
+	    _isLevelActive = false;
+	    Debug.Log("[GraphController] LEVEL COMPLETE!");
+	    
+        yield return new WaitForSeconds(1f);
+	    
+	    OnLevelCompleted?.Invoke();
     }
 
     private bool CheckWinCondition()
@@ -161,13 +176,5 @@ public class GraphController : MonoBehaviour
             .All(n => n.IsPowered);
 
         return allTargetsPowered;
-    }
-
-    private void HandleVictory()
-    {
-        Debug.Log("[GraphController] LEVEL COMPLETE!");
-        // _isLevelActive = false;
-        
-        OnLevelCompleted?.Invoke();
     }
 }
