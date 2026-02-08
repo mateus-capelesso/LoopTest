@@ -7,6 +7,6 @@ namespace _Project.Scripts.Node
 		TShape,     // T-junction
 		Cross,      // + shape
 		Source,     // Power generator
-		Bulb        // Power consumer
+		Target        // Power consumer
 	}
 }

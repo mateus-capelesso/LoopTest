@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace _Project.Scripts.Node
 {
@@ -8,11 +9,11 @@ namespace _Project.Scripts.Node
 		private NodeView _view;
 		
 		private Dictionary<Direction, NodeController> _neighbors;
+		private int _directionCount;
 
-		public bool IsSource => _model.isSource;
-		public bool IsTarget => _model.isTarget;
+		public bool IsSource => _model.IsSource;
+		public bool IsTarget => _model.IsTarget;
 		public bool IsPowered => _model.isPowered;
-		public int CurrentRotation => _model.rotationIndex;
 
 		public NodeController(NodeModel model, NodeView view)
 		{
@@ -20,27 +21,24 @@ namespace _Project.Scripts.Node
 			_view = view;
 			_neighbors = new Dictionary<Direction, NodeController>();
 
+			_directionCount = System.Enum.GetValues(typeof(Direction)).Length;
 			RefreshView();
 		}
 
 		public void RegisterNeighbor(Direction dir, NodeController neighbor)
 		{
-			if (!_neighbors.ContainsKey(dir))
-			{
-				_neighbors.Add(dir, neighbor);
-			}
-			else
-			{
-				_neighbors[dir] = neighbor;
-			}
+			_neighbors[dir] = neighbor;
 		}
 
 		public void RotateClockwise()
 		{
-			_model.rotationIndex = (_model.rotationIndex + 1) % 4;
+			var index = ((int)_model.direction + 1) % _directionCount;
+			_model.direction = (Direction)index;
 			
-			float targetAngle = -90f * _model.rotationIndex;
-			_view.AnimateRotation(targetAngle);
+			Debug.Log($"{_model.typeId} rotated clockwise to {_model.direction}");
+
+			var angle = GetAngle(_model.direction);
+			_view.AnimateRotation(angle);
 		}
 
 		public void SetPowered(bool state)
@@ -54,8 +52,8 @@ namespace _Project.Scripts.Node
 		
 		public bool HasOutput(Direction dir)
 		{
-			int sideIndex = ((int)dir - _model.rotationIndex + 4) % 4;
-			byte checkMask = (byte)(8 >> sideIndex);
+			int sideIndex = ((int)dir - (int)_model.direction + _directionCount) % _directionCount;
+			byte checkMask = (byte)((1 << (_directionCount - 1)) >> sideIndex);
 
 			return (_model.baseShape & checkMask) != 0;
 		}
@@ -67,8 +65,14 @@ namespace _Project.Scripts.Node
 
 		public void RefreshView()
 		{
-			_view.SetRotationSnap(-90f * _model.rotationIndex);
+			var angle = GetAngle(_model.direction);
+			_view.SetRotationSnap(angle);
 			_view.SetPoweredState(_model.isPowered);
+		}
+
+		private float GetAngle(Direction dir)
+		{
+			return (-360 / _directionCount) * (int)dir;
 		}
 	}
 }

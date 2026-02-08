@@ -56,7 +56,8 @@ namespace _Project.Scripts.Graph
 
 		private Direction GetOppositeDirection(Direction dir)
 		{
-			return (Direction)(((int)dir + 2) % 4);
+			int count = System.Enum.GetValues(typeof(Direction)).Length;
+			return (Direction)(((int)dir + (count / 2)) % count);
 		}
 	}
 }

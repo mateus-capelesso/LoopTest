@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,29 +8,39 @@ using _Project.Scripts.Node;
 
 public class GraphController : MonoBehaviour
 {
-    public event System.Action OnLevelCompleted;
+    [SerializeField] private LevelData _levelData;
+    [SerializeField] private CameraController _cameraController;
+    [SerializeField] private NodePrefabs _prefabs;
 	
     [Header("Settings")]
     [Tooltip("The parent transform where level prefabs will be instantiated.")]
     [SerializeField] private Transform _gridContainer;
-
-    [Tooltip("Size of one grid cell (Unity Units). Used to detect neighbors.")]
-    [SerializeField] private float _cellSize = 1.0f; 
 	
+    private Dictionary<NodeView, NodeController> _nodeControllerMap = new Dictionary<NodeView, NodeController>();
     private List<NodeController> _nodes = new ();
     private BFSController _bfsController = new ();
-    private bool _isLevelActive = false;
+    private bool _isLevelActive;
     private GameObject _currentLevelObject;
-	
+    
+    public bool IsLevelActive => _isLevelActive;
+    public Dictionary<NodeView, NodeController> NodeControllerMap => _nodeControllerMap;
+
     private static readonly Dictionary<NodeType, byte> _shapeLibrary = new()
     {
-        { NodeType.Line,       10 },	// 1010 (Up + Down)
-        { NodeType.LShape,    12 },		// 1100 (Up + Right)
-        { NodeType.TShape,    14 },		// 1110 (Up + Right + Down)
-        { NodeType.Cross,      15 },	// 1111 (All sides)
-        { NodeType.Source,     8  },	// 1000 (Single output Up)
-        { NodeType.Bulb,       8  }		// 1000 (Single input Up)
+	    { NodeType.Line, 10 },		// 1010 (Up + Down)
+	    { NodeType.LShape, 12 },	// 1100 (Up + Right)
+	    { NodeType.TShape, 14 },	// 1110 (Up + Right + Down)
+	    { NodeType.Cross, 15 },		// 1111 (All sides)
+	    { NodeType.Source, 8 },		// 1000 (Single output Up)
+	    { NodeType.Target, 8 }		// 1000 (Single input Up)
     };
+    
+    public event Action OnLevelCompleted;
+
+    private void Start()
+    {
+	    LoadLevel(_levelData);
+    }
 
     public void LoadLevel(LevelData levelData)
     {
@@ -42,45 +53,49 @@ public class GraphController : MonoBehaviour
         }
 
         _currentLevelObject = Instantiate(levelData.LevelPrefab, _gridContainer);
-        
-        NodeView[] views = _currentLevelObject.GetComponentsInChildren<NodeView>();
-        
-        if (views.Length == 0) return;
-        
-        Dictionary<Vector2, NodeController> gridMap = new Dictionary<Vector2, NodeController>();
-        
-        float minX = views.Min(v => v.transform.position.x);
-        float maxY = views.Max(v => v.transform.position.y);
 
-        foreach (NodeView view in views)
+        var cellSize = levelData.CellSize;
+        var builderNodes = _currentLevelObject.GetComponentsInChildren<NodeBuilder>();
+        if (builderNodes.Length == 0) return;
+        
+        var gridMap = new Dictionary<Vector2, NodeController>();
+        var views = new List<NodeView>();
+        
+        float minX = builderNodes.Min(v => v.transform.position.x);
+        float maxY = builderNodes.Max(v => v.transform.position.y);
+
+        foreach (var node in builderNodes)
         {
-            int x = Mathf.RoundToInt((view.transform.position.x - minX) / _cellSize);
-            int y = Mathf.RoundToInt((maxY - view.transform.position.y) / _cellSize); // Y grows downwards
-            Vector2Int pos = new Vector2Int(x, y);
-            
-            float zAngle = view.transform.eulerAngles.z;
-            int rotIndex = Mathf.RoundToInt(zAngle / 90f);
-            
-            if (zAngle > 180) rotIndex = (4 - (Mathf.RoundToInt((360 - zAngle) / 90f))) % 4;
-            else rotIndex = (Mathf.RoundToInt(-zAngle / 90f) + 4) % 4;
+            int x = Mathf.RoundToInt((node.transform.position.x - minX) / cellSize);
+            int y = Mathf.RoundToInt((maxY - node.transform.position.y) / cellSize); // Y grows downwards
+            var pos = new Vector2(x, y);
             
             byte baseShape = 0;
-            if (_shapeLibrary.ContainsKey(view.Type))
+            if (_shapeLibrary.TryGetValue(node.Type, out var value))
             {
-                baseShape = _shapeLibrary[view.Type];
+                baseShape = value;
             }
             else
             {
-                Debug.LogWarning($"[GraphController] Unknown Shape ID: {view.Type}. Defaulting to 0.");
+                Debug.LogWarning($"[GraphController] Unknown Shape ID: {node.Type}. Defaulting to 0.");
             }
-
-            var model = new NodeModel(view.Type, baseShape, view.IsSource, view.IsTarget, rotIndex);
+            
+            var prefab = _prefabs.GetPrefab(node.Type);
+            var view = Instantiate(prefab, node.transform.position, Quaternion.identity, _gridContainer);
+            var model = new NodeModel(node.Type, baseShape, node.Direction);
             var ctrl = new NodeController(model, view);
-
-            view.OnViewClicked += () => OnNodeInteracted(ctrl);
-
+            
+            node.gameObject.SetActive(false);
+            
             _nodes.Add(ctrl);
+            views.Add(view);
+            _nodeControllerMap.Add(view, ctrl);
             if (!gridMap.ContainsKey(pos)) gridMap.Add(pos, ctrl);
+        }
+
+        foreach (var node in builderNodes)
+        {
+	        Destroy(node.gameObject);
         }
 
         foreach (var kvp in gridMap)
@@ -88,13 +103,13 @@ public class GraphController : MonoBehaviour
             var pos = kvp.Key;
             var current = kvp.Value;
             
-            LinkIfExists(current, Direction.Up,    pos + Vector2.up, gridMap);
-            LinkIfExists(current, Direction.Down,  pos + Vector2.down,   gridMap); 
-            LinkIfExists(current, Direction.Right, pos + Vector2.right, gridMap);
-            LinkIfExists(current, Direction.Left,  pos + Vector2.left,  gridMap);
+            LinkIfExists(current, Direction.Up,    pos + Vector2.down * cellSize, gridMap);
+            LinkIfExists(current, Direction.Down,  pos + Vector2.up * cellSize,   gridMap); 
+            LinkIfExists(current, Direction.Right, pos + Vector2.right * cellSize, gridMap);
+            LinkIfExists(current, Direction.Left,  pos + Vector2.left * cellSize,  gridMap);
         }
 
-        CenterCamera(views);
+        _cameraController.CenterCamera(views, cellSize);
         
         _isLevelActive = true;
         RecalculateFlow();
@@ -107,59 +122,12 @@ public class GraphController : MonoBehaviour
             current.RegisterNeighbor(dir, neighbor);
         }
     }
-    
-    private void CenterCamera(IEnumerable<NodeView> views)
-	{
-	    if (views == null || !views.Any()) return;
-	    
-	    float minX = float.MaxValue;
-	    float maxX = float.MinValue;
-	    float minY = float.MaxValue;
-	    float maxY = float.MinValue;
-
-	    foreach (var view in views)
-	    {
-	        Vector3 pos = view.transform.position;
-	        
-	        if (pos.x < minX) minX = pos.x;
-	        if (pos.x > maxX) maxX = pos.x;
-	        if (pos.y < minY) minY = pos.y;
-	        if (pos.y > maxY) maxY = pos.y;
-	    }
-	    
-	    float margin = _cellSize * 0.5f; 
-	    minX -= margin;
-	    maxX += margin;
-	    minY -= margin;
-	    maxY += margin;
-
-	    // 3. Move Camera to Center
-	    float width = maxX - minX;
-	    float height = maxY - minY;
-	    
-	    Vector3 centerPos = new Vector3(minX + width / 2f, minY + height / 2f, -10f);
-	    Camera.main.transform.position = centerPos;
-	    
-	    float screenRatio = (float)Screen.width / Screen.height;
-	    float targetRatio = width / height;
-
-	    float padding = 1.2f; // 20% padding around the edges
-
-	    if (screenRatio >= targetRatio)
-	    {
-	        Camera.main.orthographicSize = (height / 2f) * padding;
-	    }
-	    else
-	    {
-	        float differenceInSize = targetRatio / screenRatio;
-	        Camera.main.orthographicSize = (height / 2f * differenceInSize) * padding;
-	    }
-	}
 
     private void ClearLevel()
     {
         _isLevelActive = false;
         _nodes.Clear();
+        _nodeControllerMap.Clear();
         
         if (_currentLevelObject != null)
         {
@@ -167,7 +135,7 @@ public class GraphController : MonoBehaviour
         }
     }
 	
-    private void OnNodeInteracted(NodeController node)
+    public void OnNodeInteracted(NodeController node)
     {
         if (!_isLevelActive) return;
 
@@ -198,7 +166,7 @@ public class GraphController : MonoBehaviour
     private void HandleVictory()
     {
         Debug.Log("[GraphController] LEVEL COMPLETE!");
-        _isLevelActive = false;
+        // _isLevelActive = false;
         
         OnLevelCompleted?.Invoke();
     }

@@ -5,20 +5,18 @@ public class NodeModel
 {
 	public NodeType typeId;
 	public byte baseShape;
-	public bool isSource;
-	public bool isTarget;
-
-	public int rotationIndex;
+	public Direction direction;
 	public bool isPowered;
+	
+	public bool IsSource => typeId == NodeType.Source;
+	public bool IsTarget => typeId == NodeType.Target;
 
-	public NodeModel(NodeType typeId, byte baseShape, bool isSource, bool isTarget, int initialRotation = 0)
+	public NodeModel(NodeType typeId, byte baseShape, Direction initialDirection)
 	{
 		this.typeId = typeId;
 		this.baseShape = baseShape;
-		this.isSource = isSource;
-		this.isTarget = isTarget;
-		rotationIndex = initialRotation;
+		direction = initialDirection;
         
-		isPowered = this.isSource;
+		isPowered = this.IsSource;
 	}
 }
