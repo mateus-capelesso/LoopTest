@@ -1,25 +1,46 @@
+using System;
 using _Project.Scripts.Node;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 namespace _Project.Scripts.Graph
 {
 	public class UserInput : MonoBehaviour
 	{
 		[SerializeField] private GraphController _graphController;
+		[SerializeField] private PlayerInput _playerInput;
 
-		private void Update()
+		private InputAction _touchPress;
+		private InputAction _touchPosition;
+
+		private void Awake()
 		{
-			if (Input.GetMouseButtonDown(0))
+			if (_playerInput == null)
 			{
-				if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-				{
-					return;
-				}
-			
-				var pos = Input.mousePosition;
-				PerformRaycast(pos);
+				GetComponent<PlayerInput>();
 			}
+			
+			_touchPress = _playerInput.actions["TouchPress"];
+			_touchPosition = _playerInput.actions["TouchPosition"];
+			
+		}
+
+		private void OnEnable()
+		{
+			_touchPress.performed += TouchPressHandler;
+		}
+
+		private void OnDisable()
+		{
+			_touchPress.performed -= TouchPressHandler;
+		}
+
+		private void TouchPressHandler(InputAction.CallbackContext context)
+		{
+			var position = _touchPosition.ReadValue<Vector2>();
+			Debug.Log($"Touch on position {position}");
+			PerformRaycast(position);
 		}
 
 		private void PerformRaycast(Vector2 screenPos)

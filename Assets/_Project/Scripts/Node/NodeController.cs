@@ -36,8 +36,6 @@ namespace _Project.Scripts.Node
 			var index = ((int)_model.direction + 1) % _directionCount;
 			_model.direction = (Direction)index;
 			
-			Debug.Log($"{_model.typeId} rotated clockwise to {_model.direction}");
-
 			var angle = GetAngle(_model.direction);
 			_view.AnimateRotation(angle);
 		}

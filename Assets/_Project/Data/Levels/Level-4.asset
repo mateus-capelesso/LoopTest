@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c47f151a9ac41c69e208cde45330b0b, type: 3}
   m_Name: Level-4
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Level.LevelData
-  _levelPrefab: {fileID: 3965757048991253832, guid: b1defbe250fef441bbdeacf345e03ea1, type: 3}
+  _levelPrefab: {fileID: 3965757048991253832, guid: 2ac8ee94cecd54b5db3dc320a72c5339, type: 3}
   _cellSize: 1
