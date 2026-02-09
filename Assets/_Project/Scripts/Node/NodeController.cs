@@ -73,5 +73,10 @@ namespace _Project.Scripts.Node
 		{
 			return (-360 / _directionCount) * (int)dir;
 		}
+
+		public void SetCompleteNode()
+		{
+			_view.SetCompleteNode();
+		}
 	}
 }

@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using _Project.Scripts.Analytics;
+using _Project.Scripts.Audio;
+using _Project.Scripts.Level;
 using UnityEngine;
+using AudioType = _Project.Scripts.Audio.AudioType;
 
 namespace _Project.Scripts.Game
 {
@@ -12,9 +15,9 @@ namespace _Project.Scripts.Game
 		
 		// Simple shortcut for Analytics purposes
 		public GameModel GameModel => _model;
-		public int AvailableLevels => _config.LevelCount;
+		public LevelData[] AvailableLevels => _config.Levels;
 		public int MaxLevel => _model.MaxLevel;
-		public int CurrentLevel => _model.CurrentLevel;
+		public LevelData CurrentLevel => _config.GetLevel(_model.CurrentLevel);
 		public int CurrentScore => _model.Score;
 		
 		private GameModel _model;
@@ -68,6 +71,8 @@ namespace _Project.Scripts.Game
 			{
 				UpdateGameData();
 			}
+			
+			AudioController.Instance.PlaySoundEffect(AudioType.Complete);
 			
 			_gameView.LevelCompleteHandler();
 			_analyticsWrapper.SendEvent(AnalyticsEvent.LevelCompleted);

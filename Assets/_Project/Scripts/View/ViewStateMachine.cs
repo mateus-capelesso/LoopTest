@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using _Project.Scripts.Game;
+using _Project.Scripts.Level;
 using UnityEngine;
 
 namespace _Project.Scripts.View
@@ -19,9 +20,9 @@ namespace _Project.Scripts.View
 		public event Action<int> OnLevelSelected;
 		public event Action OnLevelCleared;
 		
-		public int AvailableLevels => _gameView.GetAvailableLevels();
+		public LevelData[] AvailableLevels => _gameView.GetAvailableLevels();
 		public int MaxLevel => _gameView.GetMaxLevel();
-		public int CurrentLevel => _gameView.GetCurrentLevel();
+		public LevelData CurrentLevel => _gameView.GetCurrentLevel();
 		public int CurrentScore => _gameView.GetCurrentScore();
 		
 		public ViewStateMachine(GameView gameView, List<ViewDictionary> viewDictionary)

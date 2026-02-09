@@ -5,9 +5,11 @@ namespace _Project.Scripts.Level
 	[CreateAssetMenu(fileName = "NewLevel", menuName = "InfinityLoop/Level Prefab Data")]
 	public class LevelData : ScriptableObject
 	{
+		[SerializeField] private string _levelName;
 		[SerializeField] private GameObject _levelPrefab;
 		[SerializeField] private float _cellSize = 1f;
 		
+		public string LevelName => _levelName;
 		public GameObject LevelPrefab => _levelPrefab;
 		public float CellSize => _cellSize;
 	}

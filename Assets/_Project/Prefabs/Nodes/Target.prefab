@@ -136,8 +136,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44aabbab12bb47eea46b72a73ba18688, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Node.NodeView
-  _typeId: 5
   _spriteRenderer: {fileID: 4187403332201520087}
+  _rotationDuration: 0.25
+  _completeColor: {r: 0.9811321, g: 0.84619516, b: 0.5507298, a: 1}
 --- !u!61 &8882399986771264870
 BoxCollider2D:
   m_ObjectHideFlags: 0

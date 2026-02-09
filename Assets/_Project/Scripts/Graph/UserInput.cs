@@ -38,7 +38,6 @@ namespace _Project.Scripts.Graph
 		private void TouchPressHandler(InputAction.CallbackContext context)
 		{
 			var position = _touchPosition.ReadValue<Vector2>();
-			Debug.Log($"Touch on position {position}");
 			PerformRaycast(position);
 		}
 

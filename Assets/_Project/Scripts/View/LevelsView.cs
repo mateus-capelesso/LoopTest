@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using _Project.Scripts.Level;
 using _Project.Scripts.View.Components;
 using UnityEngine;
 using UnityEngine.UI;
@@ -62,19 +63,20 @@ namespace _Project.Scripts.View
 			var availableLevels = _stateMachine.AvailableLevels;
 			var maxLevel = _stateMachine.MaxLevel;
 
-			for (int i = 0; i < availableLevels; i++)
+			for (int i = 0; i < availableLevels.Length; i++)
 			{
-				var button = InstantiateLevelButton(i);
+				var level = availableLevels[i];
+				var button = InstantiateLevelButton(i, level);
 				button.SetLock(i > maxLevel);
 				
 				_instantiatedButtons.Add(button);
 			}
 		}
 		
-		private LevelButton InstantiateLevelButton(int index)
+		private LevelButton InstantiateLevelButton(int index, LevelData level)
 		{
 			var button = Instantiate(_levelButtonPrefab, _gridLayoutGroup.transform);
-			button.SetupButton(this, index);
+			button.SetupButton(this, index, level.LevelName);
 
 			return button;
 		}

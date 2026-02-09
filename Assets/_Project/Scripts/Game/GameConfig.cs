@@ -12,7 +12,7 @@ namespace _Project.Scripts.Game
 		
 		public string UserKey => _userKey;
 		public int PointsPerPiece => _pointsPerPiece;
-		public int LevelCount => _levels.Length;
+		public LevelData[] Levels => _levels;
 		public LevelData GetLevel(int index) => _levels[index];
 	}
 }

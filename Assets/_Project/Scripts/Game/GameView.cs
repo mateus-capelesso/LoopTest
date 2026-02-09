@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using _Project.Scripts.Level;
 using _Project.Scripts.View;
 using UnityEngine;
 
@@ -45,12 +46,12 @@ namespace _Project.Scripts.Game
 			return _controller.MaxLevel;
 		}
 
-		public int GetAvailableLevels()
+		public LevelData[] GetAvailableLevels()
 		{
 			return _controller.AvailableLevels;
 		}
 
-		public int GetCurrentLevel()
+		public LevelData GetCurrentLevel()
 		{
 			return _controller.CurrentLevel;
 		}

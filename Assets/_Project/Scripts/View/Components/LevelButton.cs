@@ -14,11 +14,11 @@ namespace _Project.Scripts.View.Components
 		private int _levelIndex;
 		private bool _isLocked;
 		
-		public void SetupButton(LevelsView view, int index)
+		public void SetupButton(LevelsView view, int index, string levelName)
 		{
 			_levelsView = view;
 			_levelIndex = index;
-			_levelText.text = index.ToString();
+			_levelText.text = levelName;
 			_button.onClick.AddListener(ButtonClickHandler);
 		}
 		
@@ -30,6 +30,7 @@ namespace _Project.Scripts.View.Components
 			{
 				_lockIcon.gameObject.SetActive(true);
 				_button.interactable = false;
+				_levelText.text = string.Empty;
 			}
 			else
 			{

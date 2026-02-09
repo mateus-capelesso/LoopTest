@@ -31,7 +31,7 @@ namespace _Project.Scripts.View
 
 		private void SetupHeader()
 		{
-			var currentLevel = _stateMachine.CurrentLevel;
+			var currentLevel = _stateMachine.CurrentLevel.LevelName;
 			var currentScore = _stateMachine.CurrentScore;
 			
 			_headerText.text = string.Format(HeaderFormat, currentLevel, currentScore);

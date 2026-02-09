@@ -22,7 +22,6 @@ public class GraphController : MonoBehaviour
     private bool _isLevelActive;
     private GameObject _currentLevelObject;
     
-    public bool IsLevelActive => _isLevelActive;
     public Dictionary<NodeView, NodeController> NodeControllerMap => _nodeControllerMap;
     public List<NodeController> Nodes => _nodes;
 
@@ -160,9 +159,15 @@ public class GraphController : MonoBehaviour
     IEnumerator VictoryDelay()
     {
 	    _isLevelActive = false;
+	    
 	    Debug.Log("[GraphController] LEVEL COMPLETE!");
 	    
-        yield return new WaitForSeconds(1f);
+	    foreach (var node in _nodes)
+	    {
+		    node.SetCompleteNode();
+	    }
+	    
+        yield return new WaitForSeconds(0.5f);
 	    
 	    OnLevelCompleted?.Invoke();
     }
