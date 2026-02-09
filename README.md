@@ -197,6 +197,12 @@ The project uses the following third-party libraries to simplify development:
 ### 3. Multitouch Support
 **Current Issue**: Game only responds to single touch/click events.
 
+### 4. Improve Level Builder
+**Current Issue**: There might be some confusion between the two types of builders (NodeBuilder and NodePrefabs). By creating a editor tool, we can mitigate the change of errors when creating new levels.
+
+### 5. UX Improvements
+**Current Issue**: Art, sound and UI design can be improved. They are placeholders for now.
+
 ## Project Structure
 
 ```
