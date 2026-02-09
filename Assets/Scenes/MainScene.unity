@@ -1308,7 +1308,6 @@ MonoBehaviour:
   _config: {fileID: 11400000, guid: 54ec55a8f5b3d462993305d70ce42b57, type: 2}
   _graphController: {fileID: 381013451}
   _gameView: {fileID: 1325217314}
-  _analyticsWrapper: {fileID: 1677167551}
 --- !u!4 &1128909100
 Transform:
   m_ObjectHideFlags: 0
@@ -1977,50 +1976,6 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!1 &1677167550
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1677167552}
-  - component: {fileID: 1677167551}
-  m_Layer: 0
-  m_Name: AnalyticsWrapper
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1677167551
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1677167550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8bc6136ebc984ab090e233e2dfa24cfa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Analytics.AnalyticsWrapper
---- !u!4 &1677167552
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1677167550}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1714954895
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2763,4 +2718,3 @@ SceneRoots:
   - {fileID: 381013450}
   - {fileID: 734194971}
   - {fileID: 2036719267}
-  - {fileID: 1677167552}

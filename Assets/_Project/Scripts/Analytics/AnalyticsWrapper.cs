@@ -9,9 +9,7 @@ namespace _Project.Scripts.Analytics
 	{
 		private const string AmplitudeFileName = "AmplitudeKey";
 		
-		private string _instanceName;
 		private string _apiKey;
-		private string _serverURL;
 		private bool _logs;
 		private bool _trackSessionEvents;
 		
@@ -39,16 +37,14 @@ namespace _Project.Scripts.Analytics
 			var file = Resources.Load<TextAsset>(AmplitudeFileName);
 			var data = JsonConvert.DeserializeObject<AmplitudeData>(file.text);
 			
-			_instanceName = data.instanceName;
 			_apiKey = data.apiKey;
-			_serverURL = data.serverURL;
 			_logs = data.logs;
 			_trackSessionEvents = data.trackSessionEvents;
 		}
 
 		private void InitializeService()
 		{
-			_amplitude = Amplitude.getInstance(_instanceName);
+			_amplitude = Amplitude.getInstance();
 			_amplitude.logging = _logs;
 			_amplitude.trackSessionEvents(_trackSessionEvents);
 			_amplitude.init(_apiKey);
@@ -74,7 +70,6 @@ namespace _Project.Scripts.Analytics
 
 	internal class AmplitudeData
 	{
-		public string instanceName;
 		public string apiKey;
 		public string serverURL;
 		public bool logs;

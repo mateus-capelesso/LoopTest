@@ -1,7 +1,5 @@
 {
-  "instanceName": "defaultInstance",
   "apiKey": "d161a4475fb5fd67bd443cbbe218c3f6",
-  "serverURL": "https://api2.amplitude.com",
   "logs": true,
   "trackSessionEvents": true
 }

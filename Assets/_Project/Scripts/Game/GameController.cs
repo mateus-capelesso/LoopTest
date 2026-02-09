@@ -10,7 +10,6 @@ namespace _Project.Scripts.Game
 		[SerializeField] private GraphController _graphController;
 		[SerializeField] private GameView _gameView;
 		
-
 		// Simple shortcut for Analytics purposes
 		public GameModel GameModel => _model;
 		public int AvailableLevels => _config.LevelCount;
