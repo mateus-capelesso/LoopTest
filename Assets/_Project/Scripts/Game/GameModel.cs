@@ -18,6 +18,7 @@ namespace _Project.Scripts.Game
 		{
 			_score = score;
 			_maxMaxLevel = maxLevel;
+			_currentLevel = maxLevel;
 		}
 
 		public void SetCurrentLevel(int level)

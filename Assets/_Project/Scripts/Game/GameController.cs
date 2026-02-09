@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using _Project.Scripts.Analytics;
 using UnityEngine;
 
 namespace _Project.Scripts.Game
@@ -7,7 +9,10 @@ namespace _Project.Scripts.Game
 		[SerializeField] private GameConfig _config;
 		[SerializeField] private GraphController _graphController;
 		[SerializeField] private GameView _gameView;
+		
 
+		// Simple shortcut for Analytics purposes
+		public GameModel GameModel => _model;
 		public int AvailableLevels => _config.LevelCount;
 		public int MaxLevel => _model.MaxLevel;
 		public int CurrentLevel => _model.CurrentLevel;
@@ -15,15 +20,19 @@ namespace _Project.Scripts.Game
 		
 		private GameModel _model;
 		private GamePersistentData _persistentData;
+		private AnalyticsWrapper _analyticsWrapper;
+			
 
 		private void Start()
 		{
 			_persistentData = new GamePersistentData();
+			_analyticsWrapper = new AnalyticsWrapper(this);
 			_model = _persistentData.RestoreGameModel(_config.UserKey);
 			
 			_graphController.OnLevelCompleted += LevelCompleteHandler;
 			
 			_gameView.Initialize(this);
+			_analyticsWrapper.SendEvent(AnalyticsEvent.GameStarted);
 		}
 		
 		public void StartNextLevel()
@@ -41,9 +50,12 @@ namespace _Project.Scripts.Game
 		public void StartLevel(int index)
 		{
 			var level = _config.GetLevel(index);
+			
 			_model.SetCurrentLevel(index);
 			_graphController.LoadLevel(level);
 			_gameView.LevelStartHandler();
+
+			_analyticsWrapper.SendEvent(AnalyticsEvent.LevelStarted);
 		}
 
 		public void ClearLevel()
@@ -59,6 +71,7 @@ namespace _Project.Scripts.Game
 			}
 			
 			_gameView.LevelCompleteHandler();
+			_analyticsWrapper.SendEvent(AnalyticsEvent.LevelCompleted);
 		}
 		
 		public void UpdateGameData()
@@ -69,6 +82,7 @@ namespace _Project.Scripts.Game
 			_model.AddScore(earningPoints);
 				
 			_persistentData.SaveGameModel(_config.UserKey, _model);
+			_analyticsWrapper.SendEvent(AnalyticsEvent.LevelUnblocked);
 		}
 	}
 }
