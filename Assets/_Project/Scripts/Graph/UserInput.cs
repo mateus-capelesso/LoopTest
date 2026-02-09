@@ -1,7 +1,6 @@
 using System;
 using _Project.Scripts.Node;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 namespace _Project.Scripts.Graph

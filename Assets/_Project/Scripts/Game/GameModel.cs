@@ -5,22 +5,34 @@ namespace _Project.Scripts.Game
 	[Serializable]
 	public class GameModel
 	{
-		public int _score;
-		public int _level;
+		private int _score;
+		private int _maxMaxLevel;
+		private int _currentLevel;
 		
 		public int Score => _score;
-		public int Level => _level;
+		public int MaxLevel => _maxMaxLevel;
+		public int CurrentLevel => _currentLevel;
 
 		public GameModel(){}
-		public GameModel(int score, int level)
+		public GameModel(int score, int maxLevel)
 		{
 			_score = score;
-			_level = level;
+			_maxMaxLevel = maxLevel;
 		}
 
-		public void IncreaseLevel()
+		public void SetCurrentLevel(int level)
 		{
-			_level++;
+			_currentLevel = level;
+		}
+
+		public void IncreaseCurrentLevel()
+		{
+			_currentLevel++;
+		}
+
+		public void IncreaseMaxLevel()
+		{
+			_maxMaxLevel++;
 		}
 
 		public void AddScore(int points)

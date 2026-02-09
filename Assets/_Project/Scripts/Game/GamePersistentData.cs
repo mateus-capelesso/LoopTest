@@ -24,7 +24,7 @@ namespace _Project.Scripts.Game
 			var dto = new GameDTO
 			{
 				score = model.Score,
-				level = model.Level
+				level = model.MaxLevel
 			};
 			PlayerPrefs.SetString(userKey, JsonConvert.SerializeObject(dto));
 		}

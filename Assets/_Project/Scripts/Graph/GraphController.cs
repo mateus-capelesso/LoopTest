@@ -146,9 +146,7 @@ public class GraphController : MonoBehaviour
 
         RecalculateFlow();
     }
-
     
-
     private void RecalculateFlow()
     {
         _bfsController.Run(_nodes);
