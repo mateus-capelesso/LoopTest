@@ -6,18 +6,18 @@ namespace _Project.Scripts.Game
 	public class GameModel
 	{
 		private int _score;
-		private int _maxMaxLevel;
+		private int _maxLevel;
 		private int _currentLevel;
 		
 		public int Score => _score;
-		public int MaxLevel => _maxMaxLevel;
+		public int MaxLevel => _maxLevel;
 		public int CurrentLevel => _currentLevel;
 
 		public GameModel(){}
 		public GameModel(int score, int maxLevel)
 		{
 			_score = score;
-			_maxMaxLevel = maxLevel;
+			_maxLevel = maxLevel;
 			_currentLevel = maxLevel;
 		}
 
@@ -31,9 +31,14 @@ namespace _Project.Scripts.Game
 			_currentLevel++;
 		}
 
+		public void ResetCurrentLevel()
+		{
+			_currentLevel = 0;
+		}
+
 		public void IncreaseMaxLevel()
 		{
-			_maxMaxLevel++;
+			_maxLevel++;
 		}
 
 		public void AddScore(int points)

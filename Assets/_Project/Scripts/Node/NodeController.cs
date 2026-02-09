@@ -76,7 +76,8 @@ namespace _Project.Scripts.Node
 
 		public void SetCompleteNode()
 		{
-			_view.SetCompleteNode();
+			var triggerParticles = _model.typeId == NodeType.Source || _model.typeId == NodeType.Target;
+			_view.SetCompleteNode(triggerParticles);
 		}
 	}
 }

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using _Project.Scripts.Analytics;
 using _Project.Scripts.Audio;
 using _Project.Scripts.Level;
@@ -40,6 +39,11 @@ namespace _Project.Scripts.Game
 		public void StartNextLevel()
 		{
 			_model.IncreaseCurrentLevel();
+
+			if (_model.CurrentLevel >= _config.Levels.Length)
+			{
+				_model.ResetCurrentLevel();
+			}
 			
 			StartLevel(_model.CurrentLevel);
 		}

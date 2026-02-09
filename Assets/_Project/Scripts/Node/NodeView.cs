@@ -10,6 +10,7 @@ namespace _Project.Scripts.Node
 		[SerializeField] private SpriteRenderer _spriteRenderer;
 		[SerializeField] private float _rotationDuration = 0.25f;
 		[SerializeField] private Color _completeColor = new Color(1f, 0.9f, 0.55f);
+		[SerializeField] private ParticleSystem _particleSystem;
 
 		public void AnimateRotation(float angle)
 		{
@@ -28,9 +29,13 @@ namespace _Project.Scripts.Node
 			_spriteRenderer.DOFade(targetAlpha, 0.3f);
 		}
 
-		public void SetCompleteNode()
+		public void SetCompleteNode(bool triggerParticles)
 		{
 			_spriteRenderer.DOColor(_completeColor, 0.5f);
+			if (triggerParticles)
+			{
+				_particleSystem.Play();
+			}
 		}
 	}
 }
