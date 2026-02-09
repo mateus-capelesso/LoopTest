@@ -1,3 +1,4 @@
+using System;
 using _Project.Scripts.Analytics;
 using _Project.Scripts.Audio;
 using _Project.Scripts.Level;
@@ -22,7 +23,12 @@ namespace _Project.Scripts.Game
 		private GameModel _model;
 		private GamePersistentData _persistentData;
 		private AnalyticsWrapper _analyticsWrapper;
-			
+
+		private void Awake()
+		{
+			// Locking frame rate for better experience
+			Application.targetFrameRate = 60;
+		}
 
 		private void Start()
 		{
@@ -50,6 +56,12 @@ namespace _Project.Scripts.Game
 
 		public void StartCurrentLevel()
 		{
+			// Workaround for the case when user has unlocked all levels
+			if (_model.CurrentLevel >= _config.Levels.Length)
+			{
+				_model.ResetCurrentLevel();
+			}
+			
 			StartLevel(_model.CurrentLevel);
 		}
 
