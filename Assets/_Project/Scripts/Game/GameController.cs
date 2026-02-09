@@ -6,6 +6,12 @@ namespace _Project.Scripts.Game
 	{
 		[SerializeField] private GameConfig _config;
 		[SerializeField] private GraphController _graphController;
+		[SerializeField] private GameView _gameView;
+
+		public int AvailableLevels => _config.LevelCount;
+		public int MaxLevel => _model.MaxLevel;
+		public int CurrentLevel => _model.CurrentLevel;
+		public int CurrentScore => _model.Score;
 		
 		private GameModel _model;
 		private GamePersistentData _persistentData;
@@ -17,15 +23,32 @@ namespace _Project.Scripts.Game
 			
 			_graphController.OnLevelCompleted += LevelCompleteHandler;
 			
-			StartLevel(_model.MaxLevel);
-			// Show main men UI
+			_gameView.Initialize(this);
+		}
+		
+		public void StartNextLevel()
+		{
+			_model.IncreaseCurrentLevel();
+			
+			StartLevel(_model.CurrentLevel);
 		}
 
-		private void StartLevel(int index)
+		public void StartCurrentLevel()
+		{
+			StartLevel(_model.CurrentLevel);
+		}
+
+		public void StartLevel(int index)
 		{
 			var level = _config.GetLevel(index);
 			_model.SetCurrentLevel(index);
 			_graphController.LoadLevel(level);
+			_gameView.LevelStartHandler();
+		}
+
+		public void ClearLevel()
+		{
+			_graphController.ClearLevel();
 		}
 
 		private void LevelCompleteHandler()
@@ -35,16 +58,9 @@ namespace _Project.Scripts.Game
 				UpdateGameData();
 			}
 			
-			// Show level complete UI
+			_gameView.LevelCompleteHandler();
 		}
-
-		public void TriggerNextLevel()
-		{
-			_model.IncreaseCurrentLevel();
-			
-			StartLevel(_model.CurrentLevel);
-		}
-
+		
 		public void UpdateGameData()
 		{
 			var earningPoints = _graphController.Nodes.Count * _config.PointsPerPiece;

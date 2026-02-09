@@ -116,7 +116,7 @@ public class GraphController : MonoBehaviour
         }
     }
 
-    private void ClearLevel()
+    public void ClearLevel()
     {
         _nodeControllerMap.Clear();
 

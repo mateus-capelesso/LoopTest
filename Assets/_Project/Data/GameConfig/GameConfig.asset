@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b51a83889f740aba63a7c13e7067cd6, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Scripts.Game.GameConfig
-  userKey: user_config
-  pointsPerPiece: 10
-  levels:
+  _userKey: user_config
+  _pointsPerPiece: 10
+  _levels:
   - {fileID: 11400000, guid: 4e49f9d7d1c8444a4bd288f7d01def82, type: 2}
   - {fileID: 11400000, guid: dc209db11175c49b7a37cd55282f0d24, type: 2}
   - {fileID: 11400000, guid: 466fcd065540540dbab0b1b2069cdfcd, type: 2}
